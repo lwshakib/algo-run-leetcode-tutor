@@ -5,6 +5,7 @@ import { Message, MessagePart } from "@/lib/types";
 import { extractCode } from "@/lib/utils";
 import { XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { convertToModelMessages, streamText } from "ai";
   
   interface FloatingChatBoxProps {
     onClose: () => void;
@@ -52,9 +53,6 @@ import { useEffect, useRef, useState } from "react";
       setInput("");
       setIsStreaming(true);
   
-      // Dynamically import AI dependencies only when needed
-      const [{ google }, { convertToModelMessages, streamText }] =
-        await Promise.all([import("@ai-sdk/google"), import("ai")]);
   
       // Create user message
       const newMessage: Message = {
