@@ -22,6 +22,7 @@ export default function FloatingChatBox({
   const [isStreaming, setIsStreaming] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isUserNearBottomRef = useRef(true);
+  const [isThinking, setIsThinking] = useState(false);
 
   const scrollToBottom = (behavior: ScrollBehavior = "auto") => {
     const container = scrollContainerRef.current;
@@ -53,6 +54,7 @@ export default function FloatingChatBox({
     if (input.trim() === "") return;
     setInput("");
     setIsStreaming(true);
+    setIsThinking(true);
 
     // Create user message
     const newMessage: Message = {
@@ -106,26 +108,8 @@ export default function FloatingChatBox({
       temperature: 1,
     });
 
-    for await (const part of result.fullStream) {
-      if (part.type === "reasoning-delta") {
-        // Add reasoning part
-        const currentMessages = [...messagesWithAssistant];
-        const assistantMsg = currentMessages.find(
-          (msg) => msg.id === assistantMessage.id
-        );
-        if (assistantMsg) {
-          assistantMsg.parts = assistantMsg.parts || [];
-          let reasoningPart = assistantMsg.parts.find(
-            (p) => p?.type === "reasoning"
-          );
-          if (!reasoningPart) {
-            reasoningPart = { type: "reasoning", text: "" };
-            assistantMsg.parts.push(reasoningPart);
-          }
-          reasoningPart.text += part.text;
-          setMessages(currentMessages);
-        }
-      } else if (part.type === "text-delta") {
+    for await (const part of result.textStream) {
+      if (part && part.trim()) {
         // Add text part
         const currentMessages = [...messagesWithAssistant];
         const assistantMsg = currentMessages.find(
@@ -138,7 +122,8 @@ export default function FloatingChatBox({
             textPart = { type: "text", text: "" };
             assistantMsg.parts.push(textPart);
           }
-          textPart.text += part.text;
+          textPart.text += part;
+          setIsThinking(false); // Stop thinking once we start receiving content
           setMessages(currentMessages);
         }
       }
@@ -198,6 +183,15 @@ export default function FloatingChatBox({
             </div>
           </div>
         ))}
+        {isThinking && (
+          <div className="mb-4 text-left">
+            <div className="inline-block p-3 rounded-lg max-w-full break-words text-white">
+              <div className="text-sm text-white/70 italic">
+                Algorun is thinking...
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div className="p-4">
         <div className="flex gap-2">
