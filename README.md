@@ -33,12 +33,12 @@ Never commit your real API key. `.env` is read at build time by Vite.
 
 ```bash
 # HTTPS
-git clone https://github.com/lwshakib/algorun-leetcode-tutor.git
-cd algorun-leetcode-tutor
+git clone https://github.com/lwshakib/algo-run-leetcode-tutor.git
+cd algo-run-leetcode-tutor
 
 # or SSH
-# git clone git@github.com:lwshakib/algorun-leetcode-tutor.git
-# cd algorun-leetcode-tutor
+# git clone git@github.com:lwshakib/algo-run-leetcode-tutor.git
+# cd algo-run-leetcode-tutor
 ```
 
 2. Install dependencies
