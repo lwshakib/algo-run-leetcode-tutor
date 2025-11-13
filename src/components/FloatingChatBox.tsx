@@ -4,7 +4,7 @@ import { SYSTEM_PROMPT } from "@/lib/prompt";
 import { Message, MessagePart } from "@/lib/types";
 import { extractCode } from "@/lib/utils";
 import { convertToModelMessages, streamText } from "ai";
-import { XIcon } from "lucide-react";
+import { XIcon, Github } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import MarkdownRenderer from "./MarkdownRenderer";
 
@@ -144,9 +144,20 @@ export default function FloatingChatBox({
             Algorun - Leetcode Tutor
           </h2>
         </div>
-        <button onClick={onClose} className="text-white hover:text-gray-200">
-          <XIcon className="w-6 h-6" />
-        </button>
+        <div className="flex items-center gap-3">
+          <a
+            href="https://github.com/lwshakib/algo-run-leetcode-tutor"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-gray-200 transition-colors"
+            aria-label="View on GitHub"
+          >
+            <Github className="w-5 h-5" />
+          </a>
+          <button onClick={onClose} className="text-white hover:text-gray-200">
+            <XIcon className="w-6 h-6" />
+          </button>
+        </div>
       </div>
       <div
         ref={scrollContainerRef}
