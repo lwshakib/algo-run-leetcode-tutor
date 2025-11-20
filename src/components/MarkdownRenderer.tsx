@@ -1,7 +1,73 @@
+import { Check, Copy } from "lucide-react";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
+
+// Code block component with copy button
+function CodeBlock({ code, language }: { code: string; language: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy code:", err);
+    }
+  };
+
+  return (
+    <div className="relative group my-2 rounded-lg overflow-hidden border border-white/10 bg-[#1e1e1e] shadow-lg">
+      {/* Header with language and copy button */}
+      <div className="flex items-center justify-between px-4 py-2.5 bg-white/5 border-b border-white/10 backdrop-blur-sm">
+        <span className="text-xs text-white/70 font-mono uppercase tracking-wider">
+          {language}
+        </span>
+        <button
+          onClick={copyToClipboard}
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md transition-all duration-200 ${
+            copied
+              ? "text-green-400 bg-green-400/10 hover:bg-green-400/15"
+              : "text-white/80 hover:text-white bg-white/5 hover:bg-white/10 active:scale-95"
+          }`}
+          aria-label="Copy code"
+        >
+          {copied ? (
+            <>
+              <Check className="w-3.5 h-3.5" />
+              <span>Copied!</span>
+            </>
+          ) : (
+            <>
+              <Copy className="w-3.5 h-3.5" />
+              <span>Copy</span>
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Code content */}
+      <div className="overflow-x-auto">
+        <SyntaxHighlighter
+          style={tomorrow}
+          language={language}
+          PreTag="div"
+          customStyle={{
+            fontSize: "0.75rem",
+            margin: 0,
+            padding: "1rem",
+            backgroundColor: "transparent",
+          }}
+        >
+          {code}
+        </SyntaxHighlighter>
+      </div>
+    </div>
+  );
+}
 
 export default function MarkdownRenderer({ children }: { children: string }) {
   return (
@@ -98,17 +164,15 @@ export default function MarkdownRenderer({ children }: { children: string }) {
           // Code blocks and inline code
           code: ({ node, inline, className, children, ...props }: any) => {
             const match = /language-(\w+)/.exec(className || "");
-            return !inline && match ? (
-              <SyntaxHighlighter
-                style={tomorrow}
-                language={match[1]}
-                PreTag="div"
-                customStyle={{ fontSize: "0.75rem", margin: "0.5rem 0" }}
-                {...props}
-              >
-                {String(children).replace(/\n$/, "")}
-              </SyntaxHighlighter>
-            ) : (
+            const codeString = String(children).replace(/\n$/, "");
+
+            if (!inline && match) {
+              // Code block with copy button
+              return <CodeBlock code={codeString} language={match[1]} />;
+            }
+
+            // Inline code
+            return (
               <code
                 style={{
                   backgroundColor: "transparent",
