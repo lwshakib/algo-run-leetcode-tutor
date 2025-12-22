@@ -1,56 +1,136 @@
-.popup-container {
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* App Container */
+.app-container {
   position: fixed;
-  right: 0;
-  bottom: 0;
-  margin: 1.25rem;
-  z-index: 100;
-  display: flex;
-  align-items: flex-end;
-  font-family: ui-sans-serif, system-ui, sans-serif;
-  user-select: none;
-  line-height: 1em;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 50;
 }
 
-.popup-content {
-  background-color: white;
-  color: #1f2937;
-  border-radius: 0.5rem;
-  box-shadow:
-    0 4px 6px -1px rgb(0 0 0 / 0.1),
-    0 2px 4px -2px rgb(0 0 0 / 0.1);
-  width: max-content;
-  height: min-content;
-  padding: 0.5rem 1rem;
-  margin: auto 0.5rem 0 0;
-  transition: opacity 300ms;
-}
-
-.toggle-button {
-  display: flex;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+/* Toggle Button */
+.chat-toggle-button {
+  width: 4rem;
+  height: 4rem;
   border-radius: 9999px;
-  box-shadow:
-    0 1px 3px 0 rgb(0 0 0 / 0.1),
-    0 1px 2px -1px rgb(0 0 0 / 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2563eb, #9333ea, #4f46e5);
+  color: white;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
   cursor: pointer;
-  border: none;
-  background-color: #288cd7;
+  position: relative;
+  outline: none;
 }
 
-.toggle-button:hover {
-  background-color: #1e6aa3;
+.chat-toggle-button:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: scale(1.1) rotate(3deg);
 }
 
-.button-icon {
-  padding: 4px;
+.chat-toggle-button:active {
+  transform: scale(0.95);
 }
 
-.opacity-100 {
-  opacity: 1;
+.chat-toggle-button:focus {
+  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.5);
 }
 
-.opacity-0 {
+.chat-toggle-button.open {
+  transform: rotate(90deg);
+  opacity: 0.8;
+}
+
+/* Background Glow */
+.button-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #60a5fa, #c084fc, #818cf8);
   opacity: 0;
+  filter: blur(24px);
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.chat-toggle-button:hover .button-glow {
+  opacity: 0.5;
+}
+
+/* Icon Wrapper */
+.icon-wrapper {
+  transition: transform 0.3s ease;
+}
+
+.chat-toggle-button:hover .icon-wrapper {
+  transform: scale(1.1);
+}
+
+/* Pulse Animation */
+.pulse-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.75;
+}
+
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Chat Box Wrapper Animation */
+.chat-box-wrapper {
+  animation: fadeIn 0.3s ease-out, slideUp 0.3s ease-out;
+}
+
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Firefox scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
