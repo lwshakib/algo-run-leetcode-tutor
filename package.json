@@ -1,6 +1,6 @@
 {
   "name": "algo-run-leetcode-tutor",
-   "description": "AI-powered tutoring overlay for LeetCode. Get step-by-step solutions, explanations, and learning insights while you solve problems on `leetcode.com`. Built with React 19, TypeScript, Vite, and CRXJS.",
+  "description": "AI-powered tutoring overlay for LeetCode. Get step-by-step solutions, explanations, and learning insights while you solve problems on `leetcode.com`. Built with React 19, TypeScript, Vite, and CRXJS.",
   "extension_name": "Algorun - Leetcode Tutor",
   "extension_description": "Master LeetCode problems with AI-powered tutoring - get step-by-step solutions, explanations, and learning insights to ace your coding interviews and improve your algorithmic thinking skills.",
   "type": "module",
@@ -12,8 +12,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "lucide-react": "^0.562.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.3",
