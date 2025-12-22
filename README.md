@@ -13,7 +13,7 @@ AI-powered tutoring overlay for LeetCode. Get step-by-step solutions, explanatio
 - **Gemini streaming**: Uses Google Gemini 2.5 Flash via `@ai-sdk/google` and `ai` for streamed responses.
 - **Reasoning UI**: Shows a collapsible “reasoning” trace plus a clean final answer.
 - **Session persistence**: Messages are saved in `sessionStorage` for the current tab.
-- **Modern UI**: Tailwind V4 + Radix UI + `react-markdown` with KaTeX and code highlighting.
+- **Modern UI**: Vanilla CSS + `react-markdown` with code highlighting.
 
 ## Requirements
 
@@ -85,7 +85,7 @@ This produces a production `dist/` and a distributable zip at `release/crx-<name
   - Your current code from the LeetCode editor (`.view-line` nodes via `extractCode` in `src/lib/utils.ts`)
 - `src/lib/model.ts` initializes Google GenAI with the dynamic API key from storage and selects `gemini-2.5-flash-lite`.
 - `src/hooks/useSessionStorage.tsx` debounces and saves messages to `sessionStorage`.
-- `vite.config.ts` sets alias `@` → `src`, enables React, CRXJS, Tailwind V4, and emits a versioned release zip.
+- `vite.config.ts` sets alias `@` → `src`, enables React, CRXJS, and emits a versioned release zip.
 
 ## Permissions & Matches
 
@@ -128,8 +128,7 @@ npm run preview
 ## Development Notes
 
 - The alias `@` points to `src` (see `vite.config.ts`).
-- Tailwind V4 is enabled via `@tailwindcss/vite` plugin.
-- Streaming uses `ai` SDK’s `streamText`. Markdown is rendered via a hardened `react-markdown` with KaTeX support.
+- Streaming uses `ai` SDK’s `streamText`. Markdown is rendered via a hardened `react-markdown`.
 
 ## Roadmap / Limitations
 
