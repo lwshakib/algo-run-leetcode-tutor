@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Check Formatting
+        run: bun run format:check
+
+      - name: Lint (TypeScript)
+        run: bun run lint
+
+      - name: Run Unit Tests
+        run: bun run test
+
+      - name: Build Extension
+        run: bun run build
+        env:
+          VITE_ENCRYPTION_SECRET: ${{ secrets.VITE_ENCRYPTION_SECRET || 'test-secret-for-ci' }}
+
+  # Note: E2E tests are commented out by default as they require a Gemini API key
+  # and may fail if LeetCode blocks CI IPs.
+  # e2e:
+  #   runs-on: ubuntu-latest
+  #   needs: test-and-build
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: oven-sh/setup-bun@v2
+  #     - run: bun install
+  #     - run: bun x playwright install --with-deps
+  #     - run: bun run test:e2e
+  #       env:
+  #         VITE_ENCRYPTION_SECRET: ${{ secrets.VITE_ENCRYPTION_SECRET }}

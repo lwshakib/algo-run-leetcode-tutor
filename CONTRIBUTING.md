@@ -1,121 +1,58 @@
 # Contributing to Algorun
 
-First off, thank you for considering contributing to Algorun! It's people like you that make this tool better for the entire developer community.
+First off, thank you for considering contributing to Algorun! It's people like you that make Algorun such a great tool.
 
-Whether you're fixing a bug, improving the documentation, or adding a new feature, your help is welcome and appreciated. This document provides guidelines and instructions for contributing to this project.
+## Code of Conduct
 
-## 🚀 Getting Started
+By participating in this project, you are expected to uphold our [Code of Conduct](CODE_OF_CONDUCT.md).
 
-To get the project running locally on your machine, follow these steps:
+## How Can I Contribute?
 
-### Prerequisites
+### Reporting Bugs
 
-- **Node.js**: Version 18 or higher is required.
-- **Package Manager**: We recommend `npm` (came with Node.js) or `bun`.
-- **API Key**: You'll need a Google Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+This section guides you through submitting a bug report for Algorun. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports.
 
-### Installation
+Before creating bug reports, please check this list as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible. Fill out the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md); the information it asks for helps us resolve issues faster.
 
-1. **Clone the repository**
+### Suggesting Enhancements
 
-   ```bash
-   git clone https://github.com/lwshakib/algo-run-leetcode-tutor.git
-   cd algo-run-leetcode-tutor
-   ```
+This section guides you through submitting an enhancement suggestion for Algorun, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion and find related suggestions.
 
-2. **Install dependencies**
+When you are creating an enhancement suggestion, please include as many details as possible. Fill out the [feature request template](.github/ISSUE_TEMPLATE/feature_request.md).
 
-   ```bash
-   npm install
-   ```
+### Your First Code Contribution
 
-3. **Configure Environment**
-   Create a `.env` file in the root directory:
-   ```bash
-   cp .env.example .env
-   # Or create manually
-   echo VITE_ENCRYPTION_SECRET=your_secret_here > .env
-   ```
+Unsure where to begin contributing to Algorun? You can start by looking through these `beginner` and `help-wanted` issues:
 
-## 🛠 Development Workflow
+- [Beginner issues](https://github.com/lwshakib/algo-run-leetcode-tutor/issues?q=is%3Aopen+is%3Aissue+label%3Abeginner) - issues which should only require a few lines of code, and a test or two.
+- [Help wanted issues](https://github.com/lwshakib/algo-run-leetcode-tutor/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) - issues which should be a bit more involved than `beginner` issues.
 
-This project uses **Vite** and **CRXJS** for a modern Chrome Extension development experience.
+#### Local Development
 
-### Running in Development Mode
+1. Fork the repo and clone it locally.
+2. Install dependencies with `bun install`.
+3. Create a branch for your changes: `git checkout -b my-awesome-feature`.
+4. Make your changes and ensure they follow the project's coding style (run `bun run format`).
+5. Add tests for your changes in the `__tests__` directory.
+6. Commit your changes: `git commit -m 'feat: add some awesome feature'`.
+7. Push to your fork and submit a pull request.
 
-1. Start the development server:
+## Styleguides
 
-   ```bash
-   npm run dev
-   ```
+### Git Commit Messages
 
-   This will watch for file changes and rebuild the extension automatically.
+- Use the present tense ("Add feature" not "Added feature")
+- Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
+- Limit the first line to 72 characters or less
+- Reference issues and pull requests liberally after the first line
 
-2. **Load into Chrome**:
-   - Open Chrome and navigate to `chrome://extensions/`.
-   - Enable **Developer mode** (toggle in the top right).
-   - Click **Load unpacked**.
-   - Select the `dist` folder generated in your project root.
+### Coding Style
 
-3. **Testing**:
-   - Go to any [LeetCode Problem](https://leetcode.com/problems/two-sum/) page.
-   - The Algorun chat button should appear in the bottom-right corner.
-   - Any changes you make to the code will trigger a hot reload (HMR) or extension reload.
+- We use **Prettier** for code formatting. Run `bun run format` before committing.
+- Use **TypeScript** for all new logic.
+- Follow the existing project structure.
+- Ensure all new components are responsive and accessible.
 
-### Building for Production
+## Questions?
 
-To create a production-ready build:
-
-```bash
-npm run build
-```
-
-This generates optimized assets in `dist/` and a zip file in `release/`.
-
-## 📂 Project Structure
-
-Understanding the codebase will help you navigate and contribute effectively:
-
-- **`manifest.config.ts`**: The source of truth for the extension manifest (V3).
-- **`src/content/`**: Scripts injected into the LeetCode page.
-  - `views/`: React components injected into the DOM (e.g., the specific Chat UI).
-- **`src/components/`**: Reusable UI components (Buttons, ChatBox, Markdown renderers).
-- **`src/lib/`**: Core logic and utilities.
-  - `model.ts`: AI model configuration (Gemini).
-  - `prompt.ts`: The system prompt engineering.
-  - `utils.ts`: DOM scraping and helpers.
-- **`src/popup/`**: The code for the extension popup (accessed via toolbar icon).
-
-## 📝 Pull Request Guidelines
-
-When you're ready to submit your changes:
-
-1. **Fork** the repository and create your branch from `main`.
-2. **Branch Naming**: Use descriptive names like `feature/add-dark-mode` or `fix/chat-scrolling`.
-3. **Commit Messages**: Write clear, concise commit messages.
-   - Good: "Fix markdown rendering issue in chat bubbles"
-   - Bad: "Fix bug"
-4. **Push** to your fork and submit a Pull Request.
-5. **Description**: Provide a clear description of your changes in the PR. Include screenshots/GIFs for UI changes.
-
-## 🎨 Code Style
-
-- **TypeScript**: We use strict TypeScript. Please define interfaces for props and data structures.
-- **Styling**: We use **Tailwind CSS** (v4) for styling. Avoid inline styles where possible.
-- **Components**: Use Functional Components with Hooks.
-- **Linting**: Ensure your code passes linting (no red squiggles!).
-
-## 🐞 Reporting Issues
-
-If you find a bug or have a feature request, please open an issue! Include:
-
-- A clear title and description.
-- Steps to reproduce (for bugs).
-- Screenshot or video evidence (if applicable).
-- Your browser version.
-
-## 🤝 Community
-
-Join the discussion! If you have questions, feel free to ask in the [Discussions](https://github.com/lwshakib/algo-run-leetcode-tutor/discussions) tab.
-
-Thank you for contributing! Happy Coding! 🚀
+If you have any questions, feel free to open a [Question issue](.github/ISSUE_TEMPLATE/question.md).

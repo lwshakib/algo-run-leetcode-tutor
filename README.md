@@ -1,4 +1,4 @@
-## Algorun – LeetCode Tutor (Chrome Extension)
+# <img src="public/logo.svg" alt="Algorun Logo" width="40" height="40" valign="middle" /> Algorun – LeetCode Tutor (Chrome Extension)
 
 AI-powered tutoring overlay for LeetCode. Get step-by-step solutions, explanations, and learning insights while you solve problems on `leetcode.com`. Built with React 19, TypeScript, Vite, and CRXJS.
 
@@ -6,136 +6,131 @@ AI-powered tutoring overlay for LeetCode. Get step-by-step solutions, explanatio
   <img src="public/demo.png" alt="Demo" width="100%" />
 </div>
 
-### Key Features
+---
 
-- **On-page tutor**: Floating chat opens on LeetCode problem pages (`https://leetcode.com/problems/*`).
-- **Understands context**: Reads the page description and your current editor code to personalize help.
-- **Gemini streaming**: Uses Google Gemini 2.5 Flash via `@ai-sdk/google` and `ai` for streamed responses.
-- **Reasoning UI**: Shows a collapsible “reasoning” trace plus a clean final answer.
-- **Session persistence**: Messages are saved in `sessionStorage` for the current tab.
-- **Modern UI**: Vanilla CSS + `react-markdown` with code highlighting.
+Algorun is your personal AI coding tutor that lives inside LeetCode. It doesn't just give you the answer; it helps you understand the **why** and **how** behind every algorithmic challenge. Whether you're stuck on a tricky edge case or need a hint to get started, Algorun provides contextualized guidance based on your current code and the problem description.
 
-## Requirements
+### 🌟 Key Features
 
-- Node.js 18+ (recommended)
-- An encryption secret for securing user API keys
+- **🚀 Real-time In-page Tutor**: A floating chat interface that opens directly on LeetCode problem pages (`https://leetcode.com/problems/*`).
+- **🧠 Context-Aware Hints**: Reads the problem description and your current editor code (scraped from the Monaco/CodeMirror editor) to provide personalized help.
+- **✨ Gemini-Powered Insights**: Uses Google's state-of-the-art Gemini 2.0 Flash models via `@ai-sdk/google` for blazing-fast, high-quality responses.
+- **📝 Reasoning Trace**: See the AI's step-by-step thinking process with a collapsible "reasoning" block before getting the final guidance.
+- **💾 Session Persistence**: Your conversation history is saved in `sessionStorage` per tab, so you don't lose your progress if you refresh.
+- **🎨 Premium UI**: A sleek, modern design using vanilla CSS, featuring glassmorphism effects and smooth animations.
+- **🛠️ Developer First**: Built with the latest tech stack (React 19, Vite, TypeScript) for a smooth development experience.
 
-Create a `.env` file in the project root:
+---
+
+### 🛠️ Technology Stack
+
+- **Framework**: [React 19](https://react.dev/)
+- **Build Tool**: [Vite 7](https://vitejs.dev/) + [CRXJS](https://crxjs.dev/) (Modern Chrome Extension development)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **AI Integration**: [Vercel AI SDK](https://sdk.vercel.ai/) + [Google Gemini API](https://ai.google.dev/)
+- **Markdown Rendering**: [react-markdown](https://github.com/remarkjs/react-markdown) + [react-syntax-highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Linting & Formatting**: [Prettier](https://prettier.io/)
+
+---
+
+### 📋 Prerequisites
+
+- **Node.js**: v18.0.0 or higher
+- **Bun**: (Optional but recommended for faster dependency management)
+- **Gemini API Key**: Get one from the [Google AI Studio](https://aistudio.google.com/)
+
+---
+
+### 🚀 Getting Started
+
+#### 1. Clone & Install
 
 ```bash
-# .env
-VITE_ENCRYPTION_SECRET=your_secret_here
-```
-
-Never commit your real API key. `.env` is read at build time by Vite.
-
-## Quick Start
-
-1. Clone the repository
-
-```bash
-# HTTPS
 git clone https://github.com/lwshakib/algo-run-leetcode-tutor.git
 cd algo-run-leetcode-tutor
-
-# or SSH
-# git clone git@github.com:lwshakib/algo-run-leetcode-tutor.git
-# cd algo-run-leetcode-tutor
+bun install # or npm install
 ```
 
-2. Install dependencies
+#### 2. Environment Setup
+
+Create a `.env` file in the root directory:
 
 ```bash
-npm install
+# Required for securing user API keys in local storage
+VITE_ENCRYPTION_SECRET=your-random-secure-secret-key-here
 ```
 
-3. Configure environment
+#### 3. Development
+
+Run the development server:
 
 ```bash
-echo VITE_ENCRYPTION_SECRET=your_secret_here > .env
+bun run dev # or npm run dev
 ```
 
-4. Develop and load in Chrome
+#### 4. Load in Chrome
 
-```bash
-npm run dev
+1. Open Chrome and go to `chrome://extensions/`.
+2. Enable **Developer mode** (toggle in the top right).
+3. Click **Load unpacked**.
+4. Select the `dist` folder generated in your project directory.
+5. Navigate to any [LeetCode problem](https://leetcode.com/problems/two-sum/) and you'll see the Algorun icon in the bottom right!
+
+---
+
+### 📂 Project Structure
+
+```text
+├── .github/          # GitHub Actions workflows and Issue Templates
+├── src/
+│   ├── components/   # Reusable UI components (ChatBox, MarkdownRenderer)
+│   ├── content/      # Content script (Injected into LeetCode pages)
+│   ├── hooks/        # Custom React hooks (useSessionStorage)
+│   ├── lib/          # Core logic (AI model setup, prompt engineering, utils)
+│   ├── popup/        # Extension popup UI (for settings)
+│   └── sidepanel/    # Optional Chrome side panel
+├── public/           # Static assets (icons, logo)
+├── manifest.config.ts # Manifest V3 configuration
+└── vite.config.ts    # Vite configuration
 ```
 
-- In Chrome, open `chrome://extensions/`
-- Enable Developer mode
-- Click “Load unpacked” and select the `dist` folder
-- Open any LeetCode problem page and click the chat button (bottom-right)
+---
 
-5. Build production
+### 🎯 Roadmap
 
-```bash
-npm run build
-```
+- [ ] **Multi-Model Support**: Choice between Gemini Flash, Pro, and potentially other providers.
+- [ ] **Code Analysis**: Deeper static analysis of user code before sending to AI.
+- [ ] **Problem Syncing**: Syncing progress and hints across multiple sessions.
+- [ ] **Edge Cases**: Dedicated "Edge Case" generator for the current problem.
+- [ ] **Voice Support**: Talk to the tutor instead of typing.
 
-This produces a production `dist/` and a distributable zip at `release/crx-<name>-<version>.zip`.
+---
 
-## How It Works
+### 🤝 Contributing
 
-- `manifest.config.ts` defines the MV3 manifest using CRXJS. It injects `src/content/main.tsx` on `https://leetcode.com/problems/*` and exposes `logo.svg` as a web resource. The extension name/description come from `package.json`.
-- `src/content/main.tsx` mounts the app container into the page.
-- `src/content/views/App.tsx` renders the chat toggle button and passes the problem statement from the page’s `<meta name="description">`.
-- `src/components/FloatingChatBox.tsx` streams responses from Gemini using `streamText`, with tools `google_search` and `url_context`. It builds a system prompt from `src/lib/prompt.ts` and collects:
-  - Problem statement (page meta)
-  - Current programming language (detected from the language switch button)
-  - Your current code from the LeetCode editor (`.view-line` nodes via `extractCode` in `src/lib/utils.ts`)
-- `src/lib/model.ts` initializes Google GenAI with the dynamic API key from storage and selects `gemini-2.5-flash-lite`.
-- `src/hooks/useSessionStorage.tsx` debounces and saves messages to `sessionStorage`.
-- `vite.config.ts` sets alias `@` → `src`, enables React, CRXJS, and emits a versioned release zip.
+We welcome contributions! Whether it's fixing a bug, adding a feature, or improving documentation, we'd love your help.
 
-## Permissions & Matches
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-- **permissions**: `contentSettings`
-- **content_scripts**: matches `https://leetcode.com/problems/*`
-- **web_accessible_resources**: `logo.svg`
+Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
-These are configured in `manifest.config.ts` and generated by CRXJS at build time.
+---
 
-## Scripts
+### 📄 License
 
-- **dev**: Vite watch build for the extension
-- **build**: Type-check + Vite production build
-- **preview**: Vite static preview (useful for popup/sidepanel HTML testing)
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
-```bash
-npm run dev
-npm run build
-npm run preview
-```
+---
 
-## Project Structure
+### 🙏 Acknowledgments
 
-- `src/content/` – Injected content UI for LeetCode pages
-- `src/components/` – Chat UI, AI elements, and UI primitives
-- `src/lib/` – Model setup, prompts, types, utilities
-- `src/hooks/` – Custom hooks (session storage)
-- `src/popup/` – Popup app (not injected by default in production)
-- `src/sidepanel/` – Side panel app (optional)
-- `manifest.config.ts` – MV3 manifest builder
-- `public/` – Extension icons and assets
+- [Vite Plugin CRX](https://crxjs.dev/) for making extension development easy.
+- [Vercel AI SDK](https://sdk.vercel.ai/) for the excellent streaming abstractions.
+- All the contributors who helped make Algorun better!
 
-## Usage Tips
-
-- Ensure you’re on a problem page. The chat button appears bottom-right.
-- If responses are empty or not streaming, ensure you have set your Gemini API key in the extension popup and check the Chrome console for errors.
-- If your code isn’t detected, make sure the LeetCode editor is visible. The extension scrapes `.view-line` elements.
-- Page structure changes on LeetCode can break selectors. Update them in `FloatingChatBox.tsx` and `utils.ts` if needed.
-
-## Development Notes
-
-- The alias `@` points to `src` (see `vite.config.ts`).
-- Streaming uses `ai` SDK’s `streamText`. Markdown is rendered via a hardened `react-markdown`.
-
-## Roadmap / Limitations
-
-- Currently scoped to LeetCode problem pages only.
-- Depends on LeetCode DOM; minor upstream changes may require selector updates.
-- No backend; everything runs in the browser with your API key.
-
-## License
-
-Add your preferred license here (e.g., MIT). If you include a `LICENSE` file, reference it here.
+<p align="right">(<a href="#top">back to top</a>)</p>
