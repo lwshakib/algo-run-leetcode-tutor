@@ -54,11 +54,7 @@
 .logo-glow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(96, 165, 250, 0.2),
-    rgba(192, 132, 252, 0.2)
-  );
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(192, 132, 252, 0.2));
   border-radius: 0.5rem;
   filter: blur(4px);
   z-index: -1;
@@ -130,11 +126,7 @@
   width: 4rem;
   height: 4rem;
   border-radius: 9999px;
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.2),
-    rgba(168, 85, 247, 0.2)
-  );
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(168, 85, 247, 0.2));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -185,19 +177,11 @@
 }
 
 .avatar-wrapper.assistant {
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.3),
-    rgba(168, 85, 247, 0.3)
-  );
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(168, 85, 247, 0.3));
 }
 
 .avatar-wrapper.user {
-  background: linear-gradient(
-    135deg,
-    rgba(79, 70, 229, 0.3),
-    rgba(168, 85, 247, 0.3)
-  );
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.3), rgba(168, 85, 247, 0.3));
 }
 
 .avatar-icon.assistant {

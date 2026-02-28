@@ -1,18 +1,18 @@
-import FloatingChatBox from "@/components/FloatingChatBox";
-import { BotMessageSquare, X } from "lucide-react";
-import { useState } from "react";
-import "./App.css";
+import FloatingChatBox from '@/components/FloatingChatBox';
+import { BotMessageSquare, X } from 'lucide-react';
+import { useState } from 'react';
+import './App.css';
 
 function App() {
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const metaDescriptionEl = document.querySelector("meta[name=description]");
-  const problemStatement = metaDescriptionEl?.getAttribute("content") as string;
+  const metaDescriptionEl = document.querySelector('meta[name=description]');
+  const problemStatement = metaDescriptionEl?.getAttribute('content') as string;
 
   return (
     <div className="app-container">
       <button
-        className={`chat-toggle-button ${isChatOpen ? "open" : ""}`}
-        aria-label={isChatOpen ? "Close Chat" : "Chat with Tutor"}
+        className={`chat-toggle-button ${isChatOpen ? 'open' : ''}`}
+        aria-label={isChatOpen ? 'Close Chat' : 'Chat with Tutor'}
         onClick={() => setIsChatOpen((open) => !open)}
       >
         {/* Animated background glow */}
@@ -29,10 +29,7 @@ function App() {
 
       {isChatOpen && (
         <div className="chat-box-wrapper">
-          <FloatingChatBox
-            onClose={() => setIsChatOpen(false)}
-            context={problemStatement}
-          />
+          <FloatingChatBox onClose={() => setIsChatOpen(false)} context={problemStatement} />
         </div>
       )}
     </div>

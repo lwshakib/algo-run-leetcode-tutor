@@ -1,15 +1,12 @@
-import { Message } from "@/lib/types";
-import { useEffect, useRef, useState } from "react";
+import { Message } from '@/lib/types';
+import { useEffect, useRef, useState } from 'react';
 
 export default function useSessionStorage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const saveTimeoutRef = useRef<number | null>(null);
 
   function saveToSessionStorage() {
-    sessionStorage.setItem(
-      "leetcode-tutor-messages",
-      JSON.stringify(messages, null, 2)
-    );
+    sessionStorage.setItem('leetcode-tutor-messages', JSON.stringify(messages, null, 2));
   }
 
   // Debounced save - only save after 1 second of no changes
@@ -35,7 +32,7 @@ export default function useSessionStorage() {
   }, [messages]);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem("leetcode-tutor-messages");
+    const stored = sessionStorage.getItem('leetcode-tutor-messages');
     if (stored) {
       try {
         const parsedMessages = JSON.parse(stored);
@@ -46,7 +43,7 @@ export default function useSessionStorage() {
         }));
         setMessages(messagesWithDates);
       } catch (e) {
-        sessionStorage.removeItem("leetcode-tutor-messages");
+        sessionStorage.removeItem('leetcode-tutor-messages');
       }
     }
   }, []);

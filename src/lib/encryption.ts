@@ -3,8 +3,7 @@
  * The secret key is derived from the .env variable.
  */
 
-const SECRET_KEY =
-  import.meta.env.VITE_ENCRYPTION_SECRET || "fallback-secret-key-12345";
+const SECRET_KEY = import.meta.env.VITE_ENCRYPTION_SECRET || 'fallback-secret-key-12345';
 
 // Helper to convert string to ArrayBuffer
 const strToBuffer = (str: string) => new TextEncoder().encode(str);
@@ -12,7 +11,7 @@ const strToBuffer = (str: string) => new TextEncoder().encode(str);
 // Helper to convert ArrayBuffer to base64
 const bufferToBase64 = (buffer: ArrayBuffer) => {
   const bytes = new Uint8Array(buffer);
-  let binary = "";
+  let binary = '';
   for (let i = 0; i < bytes.byteLength; i++) {
     binary += String.fromCharCode(bytes[i]);
   }
@@ -33,14 +32,11 @@ const base64ToBuffer = (base64: string) => {
 const getCryptoKey = async () => {
   const keyData = strToBuffer(SECRET_KEY);
   // Hash the secret to ensure it's the correct length for AES-256 (32 bytes)
-  const hash = await crypto.subtle.digest("SHA-256", keyData);
-  return await crypto.subtle.importKey(
-    "raw",
-    hash,
-    { name: "AES-GCM" },
-    false,
-    ["encrypt", "decrypt"]
-  );
+  const hash = await crypto.subtle.digest('SHA-256', keyData);
+  return await crypto.subtle.importKey('raw', hash, { name: 'AES-GCM' }, false, [
+    'encrypt',
+    'decrypt',
+  ]);
 };
 
 export const encrypt = async (text: string): Promise<string> => {
@@ -49,11 +45,7 @@ export const encrypt = async (text: string): Promise<string> => {
     const iv = crypto.getRandomValues(new Uint8Array(12)); // 12 bytes for GCM
     const data = strToBuffer(text);
 
-    const encrypted = await crypto.subtle.encrypt(
-      { name: "AES-GCM", iv },
-      key,
-      data
-    );
+    const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data);
 
     // Combine IV and encrypted data: [iv (12) + ciphertext]
     const combined = new Uint8Array(iv.length + encrypted.byteLength);
@@ -62,7 +54,7 @@ export const encrypt = async (text: string): Promise<string> => {
 
     return bufferToBase64(combined.buffer);
   } catch (error) {
-    console.error("Encryption failed:", error);
+    console.error('Encryption failed:', error);
     throw error;
   }
 };
@@ -75,15 +67,11 @@ export const decrypt = async (encoded: string): Promise<string> => {
     const iv = combined.slice(0, 12);
     const data = combined.slice(12);
 
-    const decrypted = await crypto.subtle.decrypt(
-      { name: "AES-GCM", iv },
-      key,
-      data
-    );
+    const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data);
 
     return new TextDecoder().decode(decrypted);
   } catch (error) {
-    console.error("Decryption failed:", error);
-    return "";
+    console.error('Decryption failed:', error);
+    return '';
   }
 };

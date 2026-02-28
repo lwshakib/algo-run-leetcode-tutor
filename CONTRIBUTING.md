@@ -52,7 +52,6 @@ This project uses **Vite** and **CRXJS** for a modern Chrome Extension developme
    This will watch for file changes and rebuild the extension automatically.
 
 2. **Load into Chrome**:
-
    - Open Chrome and navigate to `chrome://extensions/`.
    - Enable **Developer mode** (toggle in the top right).
    - Click **Load unpacked**.

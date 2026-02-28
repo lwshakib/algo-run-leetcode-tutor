@@ -1,10 +1,10 @@
-import { Check, Copy } from "lucide-react";
-import { useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
-import remarkGfm from "remark-gfm";
-import "./MarkdownRenderer.css";
+import { Check, Copy } from 'lucide-react';
+import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import remarkGfm from 'remark-gfm';
+import './MarkdownRenderer.css';
 
 // Code block component with copy button
 function CodeBlock({ code, language }: { code: string; language: string }) {
@@ -16,7 +16,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error("Failed to copy code:", err);
+      console.error('Failed to copy code:', err);
     }
   };
 
@@ -27,7 +27,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
         <span className="code-block-language">{language}</span>
         <button
           onClick={copyToClipboard}
-          className={`copy-button ${copied ? "copied" : "not-copied"}`}
+          className={`copy-button ${copied ? 'copied' : 'not-copied'}`}
           aria-label="Copy code"
         >
           {copied ? (
@@ -51,10 +51,10 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
           language={language}
           PreTag="div"
           customStyle={{
-            fontSize: "0.75rem",
+            fontSize: '0.75rem',
             margin: 0,
-            padding: "1rem",
-            backgroundColor: "transparent",
+            padding: '1rem',
+            backgroundColor: 'transparent',
           }}
         >
           {code}
@@ -87,8 +87,8 @@ export default function MarkdownRenderer({ children }: { children: string }) {
 
           // Code blocks and inline code
           code: ({ node, inline, className, children, ...props }: any) => {
-            const match = /language-(\w+)/.exec(className || "");
-            const codeString = String(children).replace(/\n$/, "");
+            const match = /language-(\w+)/.exec(className || '');
+            const codeString = String(children).replace(/\n$/, '');
 
             if (!inline && match) {
               // Code block with copy button
@@ -106,7 +106,7 @@ export default function MarkdownRenderer({ children }: { children: string }) {
 
           // Tables
           table: ({ children }) => (
-            <div style={{ overflowX: "auto" }}>
+            <div style={{ overflowX: 'auto' }}>
               <table>{children}</table>
             </div>
           ),
@@ -133,13 +133,13 @@ export default function MarkdownRenderer({ children }: { children: string }) {
           pre: ({ children }) => (
             <pre
               style={{
-                backgroundColor: "transparent",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                padding: "0.5rem",
-                borderRadius: "0.25rem",
-                overflowX: "auto",
-                fontSize: "0.75rem",
-                margin: "0.5rem 0",
+                backgroundColor: 'transparent',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                padding: '0.5rem',
+                borderRadius: '0.25rem',
+                overflowX: 'auto',
+                fontSize: '0.75rem',
+                margin: '0.5rem 0',
               }}
             >
               {children}

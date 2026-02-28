@@ -1,27 +1,19 @@
-import { useState, useEffect } from "react";
-import {
-  Key,
-  Eye,
-  EyeOff,
-  Save,
-  CheckCircle,
-  ExternalLink,
-  ShieldCheck,
-} from "lucide-react";
-import { encrypt, decrypt } from "@/lib/encryption";
-import "./App.css";
+import { useState, useEffect } from 'react';
+import { Key, Eye, EyeOff, Save, CheckCircle, ExternalLink, ShieldCheck } from 'lucide-react';
+import { encrypt, decrypt } from '@/lib/encryption';
+import './App.css';
 
 export default function App() {
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState('');
   const [showKey, setShowKey] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   useEffect(() => {
     // Load existing key from storage
     const loadKey = async () => {
-      const result = await chrome.storage.local.get(["gemini_api_key"]);
+      const result = await chrome.storage.local.get(['gemini_api_key']);
       if (result.gemini_api_key) {
         const decryptedKey = await decrypt(String(result.gemini_api_key));
         setApiKey(decryptedKey);
@@ -32,12 +24,12 @@ export default function App() {
 
   const handleSave = async () => {
     if (!apiKey.trim()) {
-      setError("Please enter a valid API key");
+      setError('Please enter a valid API key');
       return;
     }
 
     setIsSaving(true);
-    setError("");
+    setError('');
 
     try {
       const encryptedKey = await encrypt(apiKey.trim());
@@ -48,7 +40,7 @@ export default function App() {
         setTimeout(() => setSaved(false), 3000);
       });
     } catch (err) {
-      setError("Failed to encrypt and save API key.");
+      setError('Failed to encrypt and save API key.');
       setIsSaving(false);
     }
   };
@@ -62,9 +54,7 @@ export default function App() {
           </div>
           <h1>Gemini Configuration</h1>
         </div>
-        <p className="subtitle">
-          Securely manage your Gemini API key for Algorun
-        </p>
+        <p className="subtitle">Securely manage your Gemini API key for Algorun</p>
       </header>
 
       <main className="popup-content">
@@ -75,20 +65,20 @@ export default function App() {
           <div className="input-wrapper">
             <input
               id="api-key"
-              type={showKey ? "text" : "password"}
+              type={showKey ? 'text' : 'password'}
               value={apiKey}
               onChange={(e) => {
                 setApiKey(e.target.value);
-                setError("");
+                setError('');
               }}
               placeholder="Enter your API key here..."
-              className={error ? "input-error" : ""}
+              className={error ? 'input-error' : ''}
             />
             <button
               type="button"
               className="toggle-visibility"
               onClick={() => setShowKey(!showKey)}
-              title={showKey ? "Hide API Key" : "Show API Key"}
+              title={showKey ? 'Hide API Key' : 'Show API Key'}
             >
               {showKey ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -97,7 +87,7 @@ export default function App() {
         </div>
 
         <button
-          className={`save-button ${saved ? "saved" : ""}`}
+          className={`save-button ${saved ? 'saved' : ''}`}
           onClick={handleSave}
           disabled={isSaving}
         >
@@ -123,9 +113,7 @@ export default function App() {
           >
             Get a free Gemini API key <ExternalLink size={12} />
           </a>
-          <p className="privacy-note">
-            Your key is encrypted and stored locally in your browser.
-          </p>
+          <p className="privacy-note">Your key is encrypted and stored locally in your browser.</p>
         </div>
       </main>
     </div>

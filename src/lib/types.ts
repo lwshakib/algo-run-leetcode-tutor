@@ -1,10 +1,10 @@
-import { UIMessage } from "ai";
+import { UIMessage } from 'ai';
 
 export interface MessagePart {
-  type: "reasoning" | "text";
+  type: 'reasoning' | 'text';
   text: string;
 }
 
-export interface Message extends Omit<UIMessage, "parts"> {
+export interface Message extends Omit<UIMessage, 'parts'> {
   parts?: MessagePart[];
 }
