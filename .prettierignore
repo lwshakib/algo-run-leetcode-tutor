@@ -1,0 +1,22 @@
+# Build artifacts
+dist
+out
+build
+coverage
+
+# Dependencies
+node_modules
+bun.lock
+
+# Public static and assets
+public/manifest.json
+
+# Environment files
+.env
+.env.*
+
+# Logs and system
+*.log
+.DS_Store
+.vscode
+.idea
