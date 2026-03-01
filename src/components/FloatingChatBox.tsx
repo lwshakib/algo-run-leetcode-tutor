@@ -15,40 +15,67 @@ interface FloatingChatBoxProps {
   context: string;
 }
 
+/**
+ * FloatingChatBox Component
+ * This is the main UI for the AI tutoring interface. It handles message history (via sessionStorage),
+ * user input, extraction of page context (code and problem statement), and streaming responses from Gemini.
+ */
 export default function FloatingChatBox({ onClose, context }: FloatingChatBoxProps) {
+  // Use custom hook to manage message persistence in sessionStorage
   const { messages, setMessages } = useSessionStorage();
+  // Local state for the current user input in the text field
   const [input, setInput] = useState('');
+  // State to track if the AI is currently streaming a response
   const [isStreaming, setIsStreaming] = useState(false);
+  // Reference to the scrollable container for auto-scrolling to new messages
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  // Track if the user is near the bottom of the chat to decide if we should auto-scroll
   const isUserNearBottomRef = useRef(true);
+  // State to show a 'thinking' indicator while waiting for the first chunk of AI response
   const [isThinking, setIsThinking] = useState(false);
 
+  /**
+   * Automatically scroll the chat container to the bottom.
+   */
   const scrollToBottom = (behavior: ScrollBehavior = 'auto') => {
     const container = scrollContainerRef.current;
     if (!container) return;
     container.scrollTo({ top: container.scrollHeight, behavior });
   };
 
+  /**
+   * Monitor scroll events to determine if the user has scrolled up away from the bottom.
+   */
   const handleScroll = () => {
     const container = scrollContainerRef.current;
     if (!container) return;
     const distanceFromBottom =
       container.scrollHeight - (container.scrollTop + container.clientHeight);
-    isUserNearBottomRef.current = distanceFromBottom < 96; // px threshold
+    // Threshold of 96px to consider the user "at the bottom"
+    isUserNearBottomRef.current = distanceFromBottom < 96;
   };
 
+  /**
+   * Effect: Trigger auto-scroll whenever the message array changes, if the user is at the bottom.
+   */
   useEffect(() => {
     if (isUserNearBottomRef.current) {
       requestAnimationFrame(() => scrollToBottom('auto'));
     }
   }, [messages]);
 
+  /**
+   * Effect: Do a smooth scroll to bottom when streaming finishes.
+   */
   useEffect(() => {
     if (!isStreaming) {
       requestAnimationFrame(() => scrollToBottom('smooth'));
     }
   }, [isStreaming]);
 
+  /**
+   * Clears the current chat session after user confirmation.
+   */
   const clearSession = () => {
     if (messages.length === 0) return;
 
@@ -65,23 +92,28 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
     }
   };
 
+  /**
+   * Main function to handle sending a user message to the AI.
+   * It gathers page context, validates the API key, and initiates the streaming process.
+   */
   const sendMessage = async () => {
     if (input.trim() === '') return;
+    const userMessageText = input;
     setInput('');
     setIsStreaming(true);
     setIsThinking(true);
 
-    // Create user message
+    // 1. Create and add the user's message to the state
     const newMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      parts: [{ type: 'text', text: input }],
+      parts: [{ type: 'text', text: userMessageText }],
     };
 
     const updatedMessages = [...messages, newMessage];
     setMessages(updatedMessages);
 
-    // Create assistant message with parts array
+    // 2. Prepare an empty assistant message to be filled by the stream
     const assistantMessage: Message = {
       id: (Date.now() + 1).toString(),
       role: 'assistant',
@@ -92,36 +124,33 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
     setMessages(messagesWithAssistant);
     requestAnimationFrame(() => scrollToBottom('auto'));
 
-    // Collect code and context information
+    // 3. Extract context from the LeetCode environment
+    // Detect the selected programming language from the UI button
     let programmingLanguage = 'UNKNOWN';
     const changeLanguageButton = document.querySelector(
       'button.rounded.items-center.whitespace-nowrap.inline-flex.bg-transparent.dark\\:bg-dark-transparent.text-text-secondary.group',
     );
-    if (changeLanguageButton) {
-      if (changeLanguageButton.textContent) programmingLanguage = changeLanguageButton.textContent;
+    if (changeLanguageButton?.textContent) {
+      programmingLanguage = changeLanguageButton.textContent;
     }
 
+    // Extract the user's current code from the Monaco editor lines
     const userCurrentCodeContainer = document.querySelectorAll('.view-line');
     const extractedCode = extractCode(userCurrentCodeContainer);
 
-    // For now, just echo back the user's message as a mock response
-    // In a real implementation, this would be replaced with AI logic
+    // 4. Construct the prompt by injecting context into the template
     const prompt = SYSTEM_PROMPT.replace(/{{problem_statement}}/gi, () => context || '')
       .replace(/{{programming_language}}/g, () => programmingLanguage || 'UNKNOWN')
       .replace(/{{user_code}}/g, () => extractedCode || '');
 
-    console.log('context', context);
-    console.log('programmingLanguage', programmingLanguage);
-    console.log('extractedCode', extractedCode);
-
-    // 0. Fetch API key from storage
+    // 5. Retrieve and decrypt the Gemini API key from Chrome's local storage
     const storage = await chrome.storage.local.get(['gemini_api_key']);
     const encryptedKey = storage.gemini_api_key;
 
     if (!encryptedKey) {
       setIsStreaming(false);
       setIsThinking(false);
-      // Add error message to chat
+      // Inform the user if the API key is missing
       const errorMessage: Message = {
         id: Date.now().toString(),
         role: 'assistant',
@@ -132,7 +161,7 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
           },
         ],
       };
-      setMessages([...messages, newMessage, errorMessage]);
+      setMessages([...updatedMessages, errorMessage]);
       return;
     }
 
@@ -143,6 +172,7 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
       return;
     }
 
+    // 6. Initiate the AI stream using the 'ai' SDK and the Gemini model
     const result = streamText({
       model: getGoogleModel(apiKey),
       messages: convertToModelMessages(
@@ -156,9 +186,9 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
     });
 
     try {
+      // 7. Iterate through the stream and update the assistant's message in real-time
       for await (const part of result.textStream) {
         if (part && part.trim()) {
-          // Add text part
           const currentMessages = [...messagesWithAssistant];
           const assistantMsg = currentMessages.find((msg) => msg.id === assistantMessage.id);
           if (assistantMsg) {
@@ -169,7 +199,8 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
               assistantMsg.parts.push(textPart);
             }
             textPart.text += part;
-            setIsThinking(false); // Stop thinking once we start receiving content
+            // First chunk received, stop showing the thinking dot animation
+            setIsThinking(false);
             setMessages(currentMessages);
           }
         }
@@ -177,14 +208,14 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
     } catch (error) {
       console.error('Error streaming response:', error);
       setIsThinking(false);
-      // Optionally add an error message to the assistant message
+      // Handle errors during streaming by notifying the user in the chat
       const currentMessages = [...messagesWithAssistant];
       const assistantMsg = currentMessages.find((msg) => msg.id === assistantMessage.id);
       if (assistantMsg) {
         assistantMsg.parts = [
           {
             type: 'text',
-            text: 'Sorry, I encountered an error. Please try again.',
+            text: 'Sorry, I encountered an error while generating a response. Please check your API key or try again.',
           },
         ];
         setMessages(currentMessages);
@@ -197,7 +228,7 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
 
   return (
     <div className="floating-chat-box">
-      {/* Header */}
+      {/* Header section with logo, title, and action buttons */}
       <div className="chat-header">
         <div className="header-left">
           <div className="logo-container">
@@ -210,6 +241,7 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
           </div>
         </div>
         <div className="header-right">
+          {/* GitHub Link */}
           <a
             href="https://github.com/lwshakib/algo-run-leetcode-tutor"
             target="_blank"
@@ -219,6 +251,7 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
           >
             <Github className="w-4 h-4" />
           </a>
+          {/* Clear Session Button */}
           <button
             onClick={clearSession}
             disabled={messages.length === 0 || isStreaming}
@@ -228,18 +261,20 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
           >
             <Trash2 className="w-4 h-4" />
           </button>
+          {/* Close Chat Button */}
           <button onClick={onClose} className="header-action-button" aria-label="Close chat">
             <XIcon className="w-5 h-5" />
           </button>
         </div>
       </div>
 
-      {/* Messages Container */}
+      {/* Main Messages Container with custom scrollbar */}
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
         className="messages-container custom-scrollbar"
       >
+        {/* Welcome message shown when no messages exist */}
         {messages.length === 0 && (
           <div className="empty-state">
             <div className="empty-icon-wrapper">
@@ -253,9 +288,9 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
           </div>
         )}
 
+        {/* Render individual messages */}
         {messages.map((message: Message) => {
-          // Skip rendering assistant messages that have no content yet (they're being streamed)
-          // The thinking indicator will handle showing the loading state
+          // Optimization: Don't render empty assistant bubbles while they are still initializing
           if (
             message.role === 'assistant' &&
             (!message.parts ||
@@ -283,6 +318,7 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
                   <p className="user-message-text">{message.parts?.[0]?.text || ''}</p>
                 ) : (
                   <div className="assistant-message-content">
+                    {/* Render assistant message parts, using MarkdownRenderer for text */}
                     {message.parts && message.parts.length > 0
                       ? message.parts.map((part: MessagePart, idx: number) => {
                           if (part.type === 'text') {
@@ -304,6 +340,7 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
           );
         })}
 
+        {/* Thinking Indicator (Loading Dots) */}
         {isThinking && (
           <div className="message-row assistant">
             <div className="avatar-wrapper assistant">
@@ -320,7 +357,7 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
         )}
       </div>
 
-      {/* Input Area */}
+      {/* User Input Area */}
       <div className="input-area">
         <div className="input-container">
           <input
@@ -330,6 +367,7 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
+              // Handle Enter to send, Shift+Enter for new line
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
@@ -343,6 +381,7 @@ export default function FloatingChatBox({ onClose, context }: FloatingChatBoxPro
             className="send-button"
             aria-label="Send message"
           >
+            {/* Show loading spinner while streaming, else send icon */}
             {isStreaming ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (

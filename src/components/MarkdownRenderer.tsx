@@ -7,13 +7,21 @@ import remarkGfm from 'remark-gfm';
 import './MarkdownRenderer.css';
 
 // Code block component with copy button
+/**
+ * Helper component to render code blocks with syntax highlighting and a "Copy" button.
+ */
 function CodeBlock({ code, language }: { code: string; language: string }) {
+  // State to track if the code has been recently copied (used for UI feedback)
   const [copied, setCopied] = useState(false);
 
+  /**
+   * Copies the code string to the user's clipboard and updates the 'copied' state.
+   */
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
+      // Reset the "Copied!" text back to "Copy" after 2 seconds
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy code:', err);
@@ -22,7 +30,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
 
   return (
     <div className="code-block-container">
-      {/* Header with language and copy button */}
+      {/* Header bar for the code block, containing the language name and copy button */}
       <div className="code-block-header">
         <span className="code-block-language">{language}</span>
         <button
@@ -44,7 +52,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
         </button>
       </div>
 
-      {/* Code content */}
+      {/* Syntax-highlighted code area */}
       <div className="code-content-wrapper">
         <SyntaxHighlighter
           style={tomorrow}
@@ -64,13 +72,19 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
   );
 }
 
+/**
+ * Main component for rendering AI-generated Markdown content.
+ * It uses 'react-markdown' to parse the content and provides custom styled components
+ * for headings, lists, tables, and specifically, enhanced code blocks.
+ */
 export default function MarkdownRenderer({ children }: { children: string }) {
   return (
     <div className="markdown-content">
       <ReactMarkdown
+        // Enable GitHub Flavored Markdown (tables, task lists, etc.)
         remarkPlugins={[remarkGfm]}
         components={{
-          // Headings
+          // Custom mapping of Markdown elements to styled React elements
           h1: ({ children }) => <h1>{children}</h1>,
           h2: ({ children }) => <h2>{children}</h2>,
           h3: ({ children }) => <h3>{children}</h3>,
@@ -78,33 +92,31 @@ export default function MarkdownRenderer({ children }: { children: string }) {
           h5: ({ children }) => <h5>{children}</h5>,
           h6: ({ children }) => <h6>{children}</h6>,
 
-          // Paragraphs
           p: ({ children }) => <p>{children}</p>,
 
-          // Bold and Italic
           strong: ({ children }) => <strong>{children}</strong>,
           em: ({ children }) => <em>{children}</em>,
 
-          // Code blocks and inline code
+          // Enhanced 'code' component to handle both inline snippets and full code blocks
           code: ({ node, inline, className, children, ...props }: any) => {
+            // Check if this is a language-specific code block by looking for the 'language-' class
             const match = /language-(\w+)/.exec(className || '');
             const codeString = String(children).replace(/\n$/, '');
 
             if (!inline && match) {
-              // Code block with copy button
+              // If it's a multiline block with a language, use our custom CodeBlock component
               return <CodeBlock code={codeString} language={match[1]} />;
             }
 
-            // Inline code
+            // Otherwise, render as a standard inline 'code' element
             return <code {...props}>{children}</code>;
           },
 
-          // Lists
           ul: ({ children }) => <ul>{children}</ul>,
           ol: ({ children }) => <ol>{children}</ol>,
           li: ({ children }) => <li>{children}</li>,
 
-          // Tables
+          // Responsive table wrapper
           table: ({ children }) => (
             <div style={{ overflowX: 'auto' }}>
               <table>{children}</table>
@@ -116,20 +128,17 @@ export default function MarkdownRenderer({ children }: { children: string }) {
           th: ({ children }) => <th>{children}</th>,
           td: ({ children }) => <td>{children}</td>,
 
-          // Blockquotes
           blockquote: ({ children }) => <blockquote>{children}</blockquote>,
 
-          // Links
           a: ({ children, href }) => (
             <a href={href} target="_blank" rel="noopener noreferrer">
               {children}
             </a>
           ),
 
-          // Horizontal rule
           hr: () => <hr />,
 
-          // Pre blocks
+          // Custom styling for '<pre>' blocks that aren't caught by the 'code' matcher
           pre: ({ children }) => (
             <pre
               style={{
