@@ -1,0 +1,19 @@
+{
+  "name": "Algorun - Leetcode AI Tutor",
+  "short_name": "Algorun",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#7fb492",
+  "background_color": "#f7f9f7",
+  "display": "standalone"
+}
